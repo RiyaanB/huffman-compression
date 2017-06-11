@@ -5,16 +5,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CompressionGUI extends Applet implements ActionListener{
+public class CompressionGUI extends Applet implements ActionListener {
     Button compress;
     Button decompress;
     TextField path;
-    public void init(){
-        setSize(500,280);
+
+    public void init() {
+        setSize(500, 280);
         compress = new Button("Compress");
         decompress = new Button("Decompress");
-        compress.setPreferredSize(new Dimension(245,245));
-        decompress.setPreferredSize(new Dimension(245,245));
+        compress.setPreferredSize(new Dimension(245, 245));
+        decompress.setPreferredSize(new Dimension(245, 245));
         add(compress);
         add(decompress);
         compress.addActionListener(this);
@@ -23,27 +24,28 @@ public class CompressionGUI extends Applet implements ActionListener{
         add(path);
         path.setText("");
     }
-    public void start(){
+
+    public void start() {
 
     }
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource() == compress){
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == compress) {
             System.out.println("Compress");
             String p = path.getText();
             System.out.println(p);
             try {
                 new CompressedFile(p);
-            }catch (Exception x){
+            } catch (Exception x) {
                 System.out.println("Failed");
             }
-        }
-        else if(e.getSource() == decompress){
+        } else if (e.getSource() == decompress) {
             System.out.println("Decompress");
             String p = path.getText();
             System.out.println(p);
             try {
                 new UncompressedFile(p);
-            }catch (Exception x){
+            } catch (Exception x) {
                 System.out.println("Failed");
             }
         }
