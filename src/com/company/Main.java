@@ -5,6 +5,5 @@ public class Main {
         HuffmanTree h = new HuffmanTree("AAABBCDDDD");
         h.write("Hello.cpt");
         h.read("Hello.cpt");
-        System.out.print(72<<8);
     }
 }

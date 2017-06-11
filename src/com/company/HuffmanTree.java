@@ -211,26 +211,43 @@ public class HuffmanTree {
             chars[i++] = iterator.next();
         iterator = null;
         al = null;
-        int size = ((int)chars[3]) + (((int)chars[2])<<8) + (((int)chars[1])<<16 + (((int)chars[0])<<24));
-        boolean[] file = new boolean[size];
-        for(i = 4; i < (size/8)+4; i++){
-            int bits = (int)chars[i];
+        boolean[] file = new boolean[(chars.length*8)-40];
+        for(int c = 0; c < chars.length-5; c++){
+            int ch = (int)chars[c+4];
             for(int loc = 0; loc < 8; loc++){
-                file[(7-loc)+(8*(i-4))] = !(bits%2 == 0);
-                bits = bits >> 1;
+                file[(7-loc)+(8*(c))] = !(ch%2 == 0);
+                ch = ch >> 1;
             }
-            System.out.println("loop");
         }
-        int extra = (int)chars[4+(size/8)];
-        boolean[] extraBits = new boolean[8];
-        for(i = 0; i < 8; i++){
-            extraBits[7-i] = !(extra%2 == 0);
-            extra = extra >> 1;
-        }
-        for(i = 0; i < size%8; i++)
-            file[((size/8)*8)+i] = extraBits[i];
+        int size = ((int)chars[3]) + (((int)chars[2])<<8) + (((int)chars[1])<<16 + (((int)chars[0])<<24));
         for(boolean b:file)
             System.out.print(b?'1':'0');
-        System.out.println("\nOver " + size);
+        //System.out.println("\nOver " + size);
+        System.out.println("\n" + chars.length);
+        Hashtable<Character,String> dictionary = new Hashtable<Character,String>();
+        i = size-1;
+        while(true){
+            System.out.print(i + "  ");
+            int c = 0;
+            for(int count = 0; count < 8; count++){
+                c += (file[i+8-count]?1:0)<<count;
+            }
+            i += 8;
+            System.out.println(c);
+            int length = 0;
+            for(int count = 0; count < 3; count++) {
+                length += (file[i+3-count] ? 1 : 0) << count;
+            }
+            i += 3;
+            String representation = "";
+            for(int count = 0; count < length; count++){
+                representation = file[i+length-count]?"1":"0" + representation;
+            }
+            i += length;
+            dictionary.put((char)c,representation);
+            if(file.length - i < 8)
+                break;
+        }
+        System.out.println("\n" + dictionary);
     }
 }
