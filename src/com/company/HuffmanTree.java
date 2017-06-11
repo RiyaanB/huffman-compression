@@ -224,16 +224,14 @@ public class HuffmanTree {
             System.out.print(b?'1':'0');
         //System.out.println("\nOver " + size);
         System.out.println("\n" + chars.length);
-        Hashtable<Character,String> dictionary = new Hashtable<Character,String>();
+        Branch root = new Branch();
         i = size-1;
         while(true){
-            System.out.print(i + "  ");
             int c = 0;
             for(int count = 0; count < 8; count++){
                 c += (file[i+8-count]?1:0)<<count;
             }
             i += 8;
-            System.out.println(c);
             int length = 0;
             for(int count = 0; count < 3; count++) {
                 length += (file[i+3-count] ? 1 : 0) << count;
@@ -244,10 +242,35 @@ public class HuffmanTree {
                 representation = file[i+length-count]?"1":"0" + representation;
             }
             i += length;
-            dictionary.put((char)c,representation);
+            Branch p = root;
+            for(int cha = 0; cha < representation.length(); cha ++){
+                char o = representation.charAt(cha);
+                if(cha != representation.length()-1){
+                    if(o == '0') {
+                        if (p.left == null) {
+                            p.left = new Branch();
+                            p = (Branch) p.left;
+                        } else
+                            p = (Branch) p.left;
+                    }
+                    else{
+                        if(p.right == null){
+                            p.right = new Branch();
+                            p = (Branch) p.left;
+                        } else
+                            p = (Branch) p.left;
+                    }
+                }
+                else{
+                    if(o == '0')
+                        p.left = new Leaf((char)c);
+                    else
+                        p.right = new Leaf((char)c);
+                }
+            }
             if(file.length - i < 8)
                 break;
         }
-        System.out.println("\n" + dictionary);
+
     }
 }
