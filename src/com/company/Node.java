@@ -1,26 +1,22 @@
 package com.company;
 
-public abstract class Node{
-    int freq;
-    boolean isLeaf;
-}
-
-class Branch extends Node{
+public class Node{
+    String character;
+    int frequency;
+    boolean isBranch;
+    Node next;
     Node left;
     Node right;
-    int freq;
-    public Branch(){
-        isLeaf = false;
+    public Node(String c,int freq){
+        character = c;
+        frequency = freq;
     }
-}
-
-class Leaf extends Node{
-    Leaf next;
-    char c;
-    int freq;
-    public Leaf(char ch){
-        freq = 1;
-        c = ch;
-        isLeaf = true;
+    public Node(Node l, Node r){
+        left = l;
+        right = r;
+        isBranch = true;
+    }
+    public String toString(){
+        return character;
     }
 }
