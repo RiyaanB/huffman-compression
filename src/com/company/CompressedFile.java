@@ -84,11 +84,27 @@ public class CompressedFile {
                 file[i+32] = encoded.charAt(i) == '1';
             for(int i = 0; i < dictionarySize; i++)
                 file[i+32+dataSize] = dictionary[i];
-            for(boolean b:file)
-                System.out.print(b?'1':'0');
-            System.out.println();
+            char[] writableData = booleanArrayToCharArray(file);
+            BufferedWriter bw = null;
+            try{
+                 bw = new BufferedWriter(new FileWriter("newfile.tin"));
+                 bw.write(writableData,0,writableData.length);
+                 bw.flush();
+                 bw.close();
+            } catch (Exception ex){
+                System.out.println("Couldn't write file");
+            }
         }
     }
+    public char[] booleanArrayToCharArray(boolean[] bool){
+        char[] chars = new char[bool.length/8];
+        for(int i = 0; i < chars.length; i++){
+            char temp = (char)((bool[(8*i)]?1<<7:0) + (bool[(8*i)+1]?1<<6:0) + (bool[(8*i)+2]?1<<5:0) + (bool[(8*i)+3]?1<<4:0) + (bool[(8*i)+4]?1<<3:0) + (bool[(8*i)+5]?1<<2:0) + (bool[(8*i)+6]?1<<1:0) + (bool[(8*i)+7]?1:0));
+            chars[i] = temp;
+        }
+        return chars;
+    }
+
     public static boolean[] toBinary(int d, int bits){
         boolean[] b = new boolean[bits];
         long c = (long)d;

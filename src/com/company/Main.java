@@ -6,8 +6,5 @@ public class Main {
 //        h.write("Hello");
 //        h.read("Hello");
         new CompressedFile("Hello.txt");
-        boolean[] nums = CompressedFile.toBinary(64,8);
-        for(boolean n:nums)
-            System.out.print(n?'1':'0');
     }
 }
