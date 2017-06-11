@@ -26,9 +26,9 @@ public class UncompressedFile {
         if (s != null) {
             char[] data = s.toCharArray();
             boolean[] raw = charsToBinary(data);
-            for (boolean b : raw)
-                System.out.print(b ? '1' : '0');
-            System.out.println();
+//            for (boolean b : raw)
+//                System.out.print(b ? '1' : '0');
+//            System.out.println();
             int size = toInt(raw, 0, 32);
             boolean[] encoded = new boolean[size];
             for (int i = 0; i < size; i++)
@@ -45,7 +45,7 @@ public class UncompressedFile {
                     representation += raw[c++] ? '1' : '0';
                 paths.put(character, representation);
             }
-            System.out.println(paths);
+            //System.out.println(paths);
             Node root = new Node(null, null);
             Enumeration<Character> e = paths.keys();
             while (e.hasMoreElements()) {
@@ -86,7 +86,7 @@ public class UncompressedFile {
                 }
             }
             result += n.character;
-            System.out.println(result);
+            //System.out.println(result);
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(x));
                 bw.write(result.toCharArray(), 0, result.length());

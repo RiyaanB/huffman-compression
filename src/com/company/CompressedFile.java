@@ -55,7 +55,7 @@ public class CompressedFile {
             fin.character = fin.left.character + fin.right.character;
             Hashtable<Character, String> paths = new Hashtable<Character, String>();
             traverse(paths, fin, "");
-            System.out.println(paths);
+            //System.out.println(paths);
             int dictionarySize = 0;
             e = paths.keys();
             while (e.hasMoreElements()) {
@@ -91,9 +91,9 @@ public class CompressedFile {
                 file[i + 32 + dataSize] = dictionary[i];
             char[] writableData = booleanArrayToCharArray(file);
             BufferedWriter bw = null;
-            for (boolean b : file)
-                System.out.print(b ? '1' : '0');
-            System.out.println();
+//            for (boolean b : file)
+//                System.out.print(b ? '1' : '0');
+//            System.out.println();
             try {
                 bw = new BufferedWriter(new FileWriter(x));
                 bw.write(writableData, 0, writableData.length);
