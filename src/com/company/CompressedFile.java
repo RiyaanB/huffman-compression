@@ -15,6 +15,7 @@ public class CompressedFile {
                 target += (char)readVal;
                 readVal = br.read();
             }
+            x = x.substring(0,x.length()-4) + ".tin";
         } catch (Exception e){
             System.out.println("File doesn't exist");
         }
@@ -89,7 +90,7 @@ public class CompressedFile {
                 System.out.print(b?'1':'0');
             System.out.println();
             try{
-                 bw = new BufferedWriter(new FileWriter("newfile.tin"));
+                 bw = new BufferedWriter(new FileWriter(x));
                  bw.write(writableData,0,writableData.length);
                  bw.flush();
                  bw.close();

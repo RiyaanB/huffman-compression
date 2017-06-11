@@ -19,6 +19,7 @@ public class UncompressedFile {
                 c = br.read();
             }
             br.close();
+            x = x.substring(0,x.length()-4) + ".txt";
         } catch (Exception e){
             System.out.println("Couldn't open file");
         }
@@ -90,7 +91,7 @@ public class UncompressedFile {
             result += n.character;
             System.out.println(result);
             try{
-                BufferedWriter bw = new BufferedWriter(new FileWriter("Uncompressed.txt"));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(x));
                 bw.write(result.toCharArray(), 0, result.length());
                 bw.flush();
                 bw.close();
