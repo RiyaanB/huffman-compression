@@ -90,7 +90,7 @@ public class UncompressedFile {
             result += n.character;
             System.out.println(result);
             try{
-                BufferedWriter bw = new BufferedWriter(new FileWriter(x));
+                BufferedWriter bw = new BufferedWriter(new FileWriter("Uncompressed.txt"));
                 bw.write(result.toCharArray(), 0, result.length());
                 bw.flush();
                 bw.close();
