@@ -26,7 +26,6 @@ public class CompressedFile {
                 else
                     h.put(target.charAt(i),1);
             }
-            System.out.println(h);
             Node head = null;
             Enumeration<Character> e = h.keys();
             while (e.hasMoreElements()){
@@ -86,6 +85,9 @@ public class CompressedFile {
                 file[i+32+dataSize] = dictionary[i];
             char[] writableData = booleanArrayToCharArray(file);
             BufferedWriter bw = null;
+            for(boolean b:file)
+                System.out.print(b?'1':'0');
+            System.out.println();
             try{
                  bw = new BufferedWriter(new FileWriter("newfile.tin"));
                  bw.write(writableData,0,writableData.length);

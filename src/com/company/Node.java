@@ -10,6 +10,7 @@ public class Node{
     public Node(String c,int freq){
         character = c;
         frequency = freq;
+        isBranch = false;
     }
     public Node(Node l, Node r){
         left = l;
