@@ -17,6 +17,7 @@ public class CompressedFile {
             }
             x = x.substring(0,x.length()-4) + ".tin";
         } catch (Exception e){
+            e.printStackTrace();
             System.out.println("File doesn't exist");
         }
         if(target != null){
