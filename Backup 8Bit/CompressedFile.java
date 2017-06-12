@@ -90,8 +90,12 @@ public class CompressedFile {
             for (int i = 0; i < dictionarySize; i++)
                 file[i + 32 + dataSize] = dictionary[i];
             char[] writableData = booleanArrayToCharArray(file);
+            BufferedWriter bw = null;
+//            for (boolean b : file)
+//                System.out.print(b ? '1' : '0');
+//            System.out.println();
             try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(x));
+                bw = new BufferedWriter(new FileWriter(x));
                 bw.write(writableData, 0, writableData.length);
                 bw.flush();
                 bw.close();

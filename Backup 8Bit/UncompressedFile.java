@@ -26,6 +26,9 @@ public class UncompressedFile {
         if (s != null) {
             char[] data = s.toCharArray();
             boolean[] raw = charsToBinary(data);
+//            for (boolean b : raw)
+//                System.out.print(b ? '1' : '0');
+//            System.out.println();
             int size = toInt(raw, 0, 32);
             boolean[] encoded = new boolean[size];
             for (int i = 0; i < size; i++)

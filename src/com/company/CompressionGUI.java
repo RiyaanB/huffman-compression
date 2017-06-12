@@ -50,5 +50,4 @@ public class CompressionGUI extends Applet implements ActionListener {
             }
         }
     }
-
 }
