@@ -4,6 +4,6 @@ public class Main {
     public static void main(String[] args) {
         new CompressedFile("text.txt");
         System.out.println("Compressed");
-        new UncompressedFile("text.tin");
+        new DecompressedFile("text.tin");
     }
 }

@@ -1,14 +1,14 @@
 package com.company;
 
 public class Node {
-    String character;
+    char character;
     int frequency;
     boolean isBranch;
     Node next;
     Node left;
     Node right;
 
-    public Node(String c, int freq) {
+    public Node(char c, int freq) {
         character = c;
         frequency = freq;
         isBranch = false;
@@ -18,9 +18,13 @@ public class Node {
         left = l;
         right = r;
         isBranch = true;
+        frequency = l.frequency + r.frequency;
+        //character = l.character + "" + r.character;
     }
-
+    public Node(){
+        isBranch = true;
+    }
     public String toString() {
-        return character;
+        return character+"";
     }
 }

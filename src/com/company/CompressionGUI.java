@@ -44,7 +44,7 @@ public class CompressionGUI extends Applet implements ActionListener {
             String p = path.getText();
             System.out.println(p);
             try {
-                new UncompressedFile(p);
+                new DecompressedFile(p);
             } catch (Exception x) {
                 System.out.println("Failed");
             }

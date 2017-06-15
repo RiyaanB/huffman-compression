@@ -1,135 +1,96 @@
 package com.company;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class CompressedFile {
     String target;
-
-    public CompressedFile(String x) {
+    public CompressedFile(String x){
         try {
+            Hashtable<Character, Integer> frequencyTable = new Hashtable<Character, Integer>();
             BufferedReader br = new BufferedReader(new FileReader(x));
             target = "";
             int readVal = br.read();
             while (readVal != -1) {
+                if (frequencyTable.containsKey((char) readVal)) {
+                    frequencyTable.put((char) readVal, frequencyTable.get((char) readVal) + 1);
+                } else {
+                    frequencyTable.put((char) readVal, 1);
+                }
                 target += (char) readVal;
                 readVal = br.read();
             }
             x = x.substring(0, x.length() - 4) + ".tin";
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("File doesn't exist");
-        }
-        if (target != null) {
-            Hashtable<Character, Integer> h = new Hashtable<Character, Integer>();
-            for (int i = 0; i < target.length(); i++) {
-                if (h.containsKey(target.charAt(i)))
-                    h.put(target.charAt(i), h.get(target.charAt(i)) + 1);
-                else
-                    h.put(target.charAt(i), 1);
-            }
             Node head = null;
-            Enumeration<Character> e = h.keys();
+            Enumeration<Character> e = frequencyTable.keys();
             while (e.hasMoreElements()) {
                 char c = e.nextElement();
-                Node insert = new Node(c + "", h.get(c));
-                insert.isBranch = false;
+                Node insert = new Node(c, frequencyTable.get(c));
                 head = insertSort(head, insert);
             }
-            while (head.next.next != null) {
+            Node branch = null;
+            while (head != null) {
                 Node n1 = head;
-                head = head.next;
-                Node n2 = head;
-                head = head.next;
-                Node branch = new Node(n1, n2);
-                branch.frequency = n1.frequency + n2.frequency;
-                branch.character = n1.character + "" + n2.character;
+                Node n2 = head.next;
+                head = head.next.next;
+                branch = new Node(n1, n2);
                 insertSort(head, branch);
             }
-            Node fin = new Node(head, head.next);
-            fin.isBranch = true;
-            fin.character = fin.left.character + fin.right.character;
+            head = branch;
             Hashtable<Character, String> paths = new Hashtable<Character, String>();
-            traverse(paths, fin, "");
-            //System.out.println(paths);
-            int dictionarySize = 0;
-            e = paths.keys();
-            while (e.hasMoreElements()) {
-                dictionarySize += 11 + paths.get(e.nextElement()).length();
+            traverse(paths, head, "");
+            Enumeration<Character> pathList = paths.keys();
+            int dictionaryLength = 0;
+            while (pathList.hasMoreElements()) {
+                char c = pathList.nextElement();
+                dictionaryLength += 16 + 4 + paths.get(c).length();
             }
-            boolean[] dictionary = new boolean[dictionarySize];
+            int encodedLength = 0;
+            for (int i = 0; i < target.length(); i++) {
+                encodedLength += paths.get(target.charAt(i)).length();
+            }
+            int extra = (16 - ((encodedLength + dictionaryLength) % 16))%16;
+            boolean[] file = new boolean[32 + encodedLength + dictionaryLength + extra];
+            boolean[] header = toBinary(encodedLength, 32);
+            for (int i = 0; i < 32; i++) {
+                file[i] = header[i];
+            }
+            int loc = 32;
+            for(int i = 0; i < target.length(); i++){
+                String path = paths.get(target.charAt(i));
+                for(int ch = 0; ch < path.length(); ch++){
+                    file[loc++] = path.charAt(ch) == '1';
+                }
+            }
             e = paths.keys();
-            int count = 0;
-            while (e.hasMoreElements()) {
+            loc = 32 + encodedLength;
+            while (e.hasMoreElements()){
                 char c = e.nextElement();
-                boolean[] charBinary = toBinary((int) c, 8);
-                for (int i = 0; i < 8; i++)
-                    dictionary[count++] = charBinary[i];
-                boolean[] lengthBinary = toBinary(paths.get(c).length(), 3);
-                for (int i = 0; i < 3; i++)
-                    dictionary[count++] = lengthBinary[i];
-                String path = paths.get(c);
-                for (int i = 0; i < path.length(); i++)
-                    dictionary[count++] = path.charAt(i) == '1';
+                boolean[] character = toBinary(c, 16);
+                for(int i = 0; i < 16; i++){
+                    file[loc++] = character[i];
+                }
+                String rep = paths.get(c);
+                boolean[] lengthOfRepresentation = toBinary(rep.length()-1,4);
+                for(int i = 0; i < 4; i++){
+                    file[loc++] = lengthOfRepresentation[i];
+                }
+                boolean[] representation = new boolean[rep.length()];
+                for(int i = 0; i < representation.length; i++) {
+                    file[loc++] = rep.charAt(i) == '1';
+                }
             }
-            String encoded = "";
-            for (int i = 0; i < target.length(); i++)
-                encoded += paths.get(target.charAt(i));
-            int dataSize = encoded.length();
-            int total = 32 + dictionarySize + dataSize;
-            boolean[] file = new boolean[total + (8 - total % 8)];
-            boolean[] size = toBinary(dataSize, 32);
-            for (int i = 0; i < size.length; i++)
-                file[i] = size[i];
-            for (int i = 0; i < dataSize; i++)
-                file[i + 32] = encoded.charAt(i) == '1';
-            for (int i = 0; i < dictionarySize; i++)
-                file[i + 32 + dataSize] = dictionary[i];
-            char[] writableData = booleanArrayToCharArray(file);
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(x));
-                bw.write(writableData, 0, writableData.length);
-                bw.flush();
-                bw.close();
-            } catch (Exception ex) {
-                System.out.println("Couldn't write file");
-            }
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(x));
+            for(int i = 0; i < file.length; i += 8)
+                bufferedOutputStream.write(toDecimal(file,i,i+8));
+            bufferedOutputStream.flush();
+            bufferedOutputStream.close();
+        } catch(IOException e){
+            e.printStackTrace();
+            System.out.println("File not found");
         }
     }
-
-    public static boolean[] toBinary(int d, int bits) {
-        boolean[] b = new boolean[bits];
-        long c = (long) d;
-        for (int i = 0; i < bits; i++) {
-            b[bits - i - 1] = !(c % 2 == 0);
-            c = c >> 1;
-        }
-        return b;
-    }
-
-    public char[] booleanArrayToCharArray(boolean[] bool) {
-        char[] chars = new char[bool.length / 8];
-        for (int i = 0; i < chars.length; i++) {
-            char temp = (char) ((bool[(8 * i)] ? 1 << 7 : 0) + (bool[(8 * i) + 1] ? 1 << 6 : 0) + (bool[(8 * i) + 2] ? 1 << 5 : 0) + (bool[(8 * i) + 3] ? 1 << 4 : 0) + (bool[(8 * i) + 4] ? 1 << 3 : 0) + (bool[(8 * i) + 5] ? 1 << 2 : 0) + (bool[(8 * i) + 6] ? 1 << 1 : 0) + (bool[(8 * i) + 7] ? 1 : 0));
-            chars[i] = temp;
-        }
-        return chars;
-    }
-
-    private void traverse(Hashtable<Character, String> paths, Node node, String path) {
-        if (node == null)
-            return;
-        if (!node.isBranch) {
-            paths.put(node.character.charAt(0), path);
-        }
-        traverse(paths, node.left, path + '0');
-        traverse(paths, node.right, path + '1');
-    }
-
     private Node insertSort(Node head, Node insert) {
         if (head == null)
             head = new Node(insert.character, insert.frequency);
@@ -151,5 +112,33 @@ public class CompressedFile {
             }
         }
         return head;
+    }
+    private void traverse(Hashtable<Character,String> paths, Node node, String path){
+        if(node != null){
+            if(node.isBranch){
+                traverse(paths, node.left, path + "0");
+                traverse(paths, node.right, path + "1");
+            }
+            else
+                paths.put(node.character,path);
+        }
+    }
+    public static boolean[] toBinary(int d, int bits) {
+        boolean[] b = new boolean[bits];
+        int c = (int) d;
+        for (int i = 0; i < bits; i++) {
+            b[bits - i - 1] = !(c % 2 == 0);
+            c = c >> 1;
+        }
+        return b;
+    }
+
+    public static char toDecimal(boolean[] vals, int start, int end){
+        char j = 0;
+        for (int i = start; i < end; i++) {
+            if (vals[i])
+                j += 1 << (end) - 1 - i;
+        }
+        return j;
     }
 }

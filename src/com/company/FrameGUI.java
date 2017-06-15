@@ -6,9 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 public class FrameGUI extends JFrame implements ActionListener{
     JFileChooser fileChooser;
@@ -91,7 +89,7 @@ public class FrameGUI extends JFrame implements ActionListener{
         else if(e.getSource() == unzip){
             Enumeration<File> en = selectedFileList.elements();
             while (en.hasMoreElements()){
-                new UncompressedFile(en.nextElement().getAbsolutePath());
+                new DecompressedFile(en.nextElement().getAbsolutePath());
             }
             selectedFileList.clear();
         }
