@@ -82,14 +82,22 @@ public class FrameGUI extends JFrame implements ActionListener{
         else if(e.getSource() == zip){
             Enumeration<File> en = selectedFileList.elements();
             while (en.hasMoreElements()){
-                new CompressedFile(en.nextElement().getAbsolutePath());
+                String temp = en.nextElement().getAbsolutePath();
+                System.out.println(temp.substring(temp.length()-4,temp.length()));
+                if(temp.substring(temp.length()-4,temp.length()).equals(".txt")) {
+                    Zipper.CompressFile(temp);
+                }
             }
             selectedFileList.clear();
         }
         else if(e.getSource() == unzip){
             Enumeration<File> en = selectedFileList.elements();
             while (en.hasMoreElements()){
-                new DecompressedFile(en.nextElement().getAbsolutePath());
+                String temp = en.nextElement().getAbsolutePath();
+                System.out.println(temp.substring(temp.length()-4,temp.length()));
+                if(temp.substring(temp.length()-4,temp.length()).equals(".tin")) {
+                    Zipper.DecompressFile(temp);
+                }
             }
             selectedFileList.clear();
         }

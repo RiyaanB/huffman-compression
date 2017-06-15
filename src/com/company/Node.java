@@ -18,7 +18,7 @@ public class Node {
         left = l;
         right = r;
         isBranch = true;
-        frequency = l.frequency + r.frequency;
+        frequency = l.frequency + (r == null ? 0 : r.frequency);
     }
     public Node(){
         isBranch = true;
